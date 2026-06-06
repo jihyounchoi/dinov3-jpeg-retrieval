@@ -1,0 +1,30 @@
+name: dinov3-jpeg-retrieval
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - numpy=1.26
+  - scipy
+  - scikit-learn
+  - pandas
+  - matplotlib
+  - seaborn
+  - pillow
+  - tqdm
+  - pyyaml
+  - ipykernel
+  - pytorch=2.5.1
+  - torchvision=0.20.1
+  - pytorch-cuda=11.8
+  - ittapi
+  - omegaconf
+  - torchmetrics
+  - ftfy
+  - regex
+  - termcolor
+  - submitit
+  - umap-learn

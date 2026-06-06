@@ -1,0 +1,84 @@
+project:
+  name: dinov3_jpeg_robustness_retrieval
+  root: .
+
+runtime:
+  conda_env: dinov3-jpeg-retrieval
+  seed: 2026
+  run_log: outputs/run_log.csv
+
+data:
+  dataset_name: oxford_iiit_pet
+  raw_dir: data/raw/oxford_iiit_pet
+  processed_dir: data/processed
+  images_dir: data/raw/oxford_iiit_pet/images
+  annotations_dir: data/raw/oxford_iiit_pet/annotations
+  manifest_full: data/processed/manifest_full.csv
+  manifest_sanity: data/processed/manifest_sanity.csv
+  query_manifest_full: data/processed/query_manifest_full.csv
+  query_manifest_sanity: data/processed/query_manifest_sanity.csv
+  images_url: https://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz
+  annotations_url: https://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz
+  sanity_images_per_class: 10
+
+compression:
+  qualities: [90, 70, 50, 30, 10, 1]
+  sanity_qualities: [70, 10]
+  jpeg_root: data/processed
+  overwrite: false
+
+preprocess:
+  resize_size: 256
+  crop_size: 224
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+
+models:
+  dinov3:
+    display_name: DINOv3 ViT-B/16
+    kind: dinov3_hub
+    repo_dir: external/dinov3
+    hub_name: dinov3_vitb16
+    weights: data/models/dinov3/dinov3_vitb16_lvd1689m.pth
+  dinov3_vits16:
+    display_name: DINOv3 ViT-S/16
+    kind: dinov3_hub
+    repo_dir: external/dinov3
+    hub_name: dinov3_vits16
+    weights: data/models/dinov3/dinov3_vits16_lvd1689m.pth
+  resnet50:
+    display_name: ImageNet ResNet-50
+    kind: torchvision_resnet50
+    weights: IMAGENET1K_V2
+  vit_b_16:
+    display_name: ImageNet ViT-B/16
+    kind: torchvision_vit_b_16
+    weights: IMAGENET1K_V1
+
+features:
+  batch_size: 64
+  sanity_batch_size: 32
+  num_workers: 4
+  output_dir: outputs/features
+
+retrieval:
+  ks: [1, 5, 10]
+  topk_for_export: 10
+  tables_dir: outputs/tables
+  bootstrap_B: 1000
+  bootstrap_alpha: 0.05
+  failure_rank_shift_threshold: 5
+
+visualization:
+  figures_dir: outputs/figures
+  retrieval_grid_dir: outputs/retrieval_grids
+  embedding_quality: 10
+  embedding_model: dinov3
+  embedding_method: umap
+  pca_components_before_embedding: 50
+  max_embedding_points: 0
+  retrieval_grid_k: 5
+  umap_n_neighbors: 15
+  umap_min_dist: 0.1
+  umap_random_state: 2026
+  tsne_perplexity: 30
